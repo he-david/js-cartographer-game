@@ -13,7 +13,7 @@ A fegyelmi vétség legsúlyosabb következménye a hallgató elbocsátása az e
 ### Minimálisan teljesítendő (enélkül nem fogadjuk el, 8 pont)
 
 [ x ] Négyzetrács: A játék elindítása után kirajzolódik a 11x11 térkép kirajzolása a hegyekkel a megfelelő helyen. (1 pont)
-[ ] Lehelyezés: A térképelemek közül egy véletlenszerűen megjelenik a hozzájuk tartozó időegységekkel. (1 pont)
+[ x ] Lehelyezés: A térképelemek közül egy véletlenszerűen megjelenik a hozzájuk tartozó időegységekkel. (1 pont)
 [ ] Lehelyezés: A térképelemet le tudjuk helyezni a négyzetrácsra (bárhova). (2 pont)
 [ ] Idő: A játék 28 időegységig tart, és a térképelemek lehelyezésével kivonja a térképelemhez tartozó időegységet belőle. (1 pont)
 [ ] Küldetés: a "Határvidék" küldetés pontszámát ki tudja számolni. (1 pont)

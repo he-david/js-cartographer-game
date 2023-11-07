@@ -1,5 +1,7 @@
 export const MAP_SIZE = 11;
 
+export const PLACING_SIZE = 3;
+
 export const MOUNTAIN_COORDINATES = [
   { row: 1, col: 1 },
   { row: 3, col: 8 },
@@ -8,4 +10,183 @@ export const MOUNTAIN_COORDINATES = [
   { row: 9, col: 5 },
 ];
 
-export const CELL_SIZE = window.innerWidth / 22 - 4 + 'px';
+export const PLACING_CELL_SIZE = '50px';
+
+export const ELEMENTS = [
+  {
+    time: 2,
+    type: 'water',
+    shape: [
+      [1, 1, 1],
+      [0, 0, 0],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 2,
+    type: 'village',
+    shape: [
+      [1, 1, 1],
+      [0, 0, 0],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 1,
+    type: 'forest',
+    shape: [
+      [1, 1, 0],
+      [0, 1, 1],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 2,
+    type: 'plains',
+    shape: [
+      [1, 1, 1],
+      [0, 0, 1],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 2,
+    type: 'forest',
+    shape: [
+      [1, 1, 1],
+      [0, 0, 1],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 2,
+    type: 'village',
+    shape: [
+      [1, 1, 1],
+      [0, 1, 0],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 2,
+    type: 'plains',
+    shape: [
+      [1, 1, 1],
+      [0, 1, 0],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 1,
+    type: 'village',
+    shape: [
+      [1, 1, 0],
+      [1, 0, 0],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 1,
+    type: 'village',
+    shape: [
+      [1, 1, 1],
+      [1, 1, 0],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 1,
+    type: 'plains',
+    shape: [
+      [1, 1, 0],
+      [0, 1, 1],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 1,
+    type: 'plains',
+    shape: [
+      [0, 1, 0],
+      [1, 1, 1],
+      [0, 1, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 2,
+    type: 'water',
+    shape: [
+      [1, 1, 1],
+      [1, 0, 0],
+      [1, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 2,
+    type: 'water',
+    shape: [
+      [1, 0, 0],
+      [1, 1, 1],
+      [1, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 2,
+    type: 'forest',
+    shape: [
+      [1, 1, 0],
+      [0, 1, 1],
+      [0, 0, 1],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 2,
+    type: 'forest',
+    shape: [
+      [1, 1, 0],
+      [0, 1, 1],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+  {
+    time: 2,
+    type: 'water',
+    shape: [
+      [1, 1, 0],
+      [1, 1, 0],
+      [0, 0, 0],
+    ],
+    rotation: 0,
+    mirrored: false,
+  },
+];
