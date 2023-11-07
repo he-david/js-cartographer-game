@@ -1,8 +1,19 @@
 import { ELEMENTS, PLACING_SIZE } from './constants.js';
-import { fillCell, fillPlacingCell, matrix } from './layout-builder.js';
+import { fillCell, fillPlacingCell, matrix, refreshTime } from './layout-builder.js';
 
 let currentItem;
 let previousCoordinates = [];
+const seasons = {
+  currentSeason: 'spring',
+  spring: 7,
+  summer: 7,
+  fall: 7,
+  winter: 7,
+};
+
+export const getSeasonAndTime = () => {
+  return { season: seasons.currentSeason, time: seasons[seasons.currentSeason] };
+};
 
 export const placeRandomItem = () => {
   currentItem = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)];
@@ -11,6 +22,8 @@ export const placeRandomItem = () => {
 
   for (let i = 0; i < PLACING_SIZE; i++) {
     for (let j = 0; j < PLACING_SIZE; j++) {
+      fillPlacingCell(`assets/tiles/base_tile.svg`, i, j);
+
       if (currentItem.shape[i][j] === 1) {
         fillPlacingCell(`assets/tiles/${currentItem.type}_tile.svg`, i, j);
       }
@@ -69,11 +82,35 @@ export const hoveringEventHandler = (event) => {
   );
 };
 
+const changeSeason = (remaining) => {
+  seasons[seasons.currentSeason] = 0;
+  const seasonNames = Object.getOwnPropertyNames(seasons);
+  const index = seasonNames.findIndex((name) => name === seasons.currentSeason);
+
+  if (index === seasonNames.length - 1) {
+    alert('Game ended');
+  } else {
+    seasons.currentSeason = seasonNames[index + 1];
+    seasons[seasons.currentSeason] -= remaining;
+  }
+};
+
+const itemPlaced = () => {
+  if (seasons[seasons.currentSeason] - currentItem.time <= 0) {
+    changeSeason(currentItem.time - seasons[seasons.currentSeason]);
+  } else {
+    seasons[seasons.currentSeason] -= currentItem.time;
+  }
+  refreshTime();
+  placeRandomItem();
+};
+
 export const placingEventHandler = (event) => {
   const { isValid, coordinates } = isValidPlace(event);
 
   if (isValid) {
     coordinates.forEach((coordinate) => fillCell(`assets/tiles/${currentItem.type}_tile.svg`, coordinate.row, coordinate.col));
     cleanupPlaces();
+    itemPlaced();
   }
 };

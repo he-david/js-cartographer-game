@@ -1,5 +1,5 @@
 import { MAP_SIZE, MOUNTAIN_COORDINATES, PLACING_SIZE, PLACING_CELL_SIZE } from './constants.js';
-import { hoveringEventHandler, placeRandomItem, placingEventHandler } from './game-logic.js';
+import { getSeasonAndTime, hoveringEventHandler, placeRandomItem, placingEventHandler } from './game-logic.js';
 
 export const matrix = [];
 export const placingMatrix = [];
@@ -81,8 +81,14 @@ const generatePlacingLayout = () => {
   }
 };
 
+export const refreshTime = () => {
+  const timeLeft = document.querySelector('#time-left');
+  timeLeft.innerText = getSeasonAndTime().time;
+};
+
 const generateSidebarLayout = () => {
   generatePlacingLayout();
+  refreshTime();
 };
 
 generateMapLayout();
