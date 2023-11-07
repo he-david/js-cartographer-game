@@ -1,45 +1,42 @@
 import { MAP_SIZE, MOUNTAIN_COORDINATES, PLACING_SIZE, PLACING_CELL_SIZE } from './constants.js';
+import { hoveringEventHandler, placeRandomItem, placingEventHandler } from './game-logic.js';
 
-const matrix = [];
-const placingMatrix = [];
+export const matrix = [];
+export const placingMatrix = [];
 
-export const getCell = (x, y) => {
-  console.log(matrix[x][y].innerText);
-  return matrix[x][y];
-};
-
-const createSvg = (src) => {
+const createSvg = (src, x, y, placing = false) => {
   const svg = document.createElement('img');
   svg.src = src;
   svg.classList.add('mv-100', 'mh-100');
+
+  if (!placing) {
+    svg.dataset.row = x;
+    svg.dataset.col = y;
+    svg.addEventListener('mouseover', hoveringEventHandler);
+    svg.addEventListener('click', placingEventHandler);
+  }
   return svg;
 };
 
 export const fillCell = (src, x, y) => {
-  matrix[x][y].replaceChildren(createSvg(src));
+  matrix[x][y].replaceChildren(createSvg(src, x, y));
 };
 
 export const fillPlacingCell = (src, x, y) => {
-  placingMatrix[x][y].replaceChildren(createSvg(src));
+  placingMatrix[x][y].replaceChildren(createSvg(src, x, y, true));
 };
 
-const appendCell = (src, cell) => {
-  cell.appendChild(createSvg(src));
+const appendCell = (src, cell, x, y, placing = false) => {
+  cell.appendChild(createSvg(src, x, y, placing));
 };
 
 const initializeMountains = () => {
   MOUNTAIN_COORDINATES.forEach((coordinate) => fillCell('assets/tiles/mountain_tile.svg', coordinate.row, coordinate.col));
 };
 
-const addClass = (classes, item, condition) => {
-  if (condition) {
-    classes.push(item);
-  }
-};
-
 const generateMapLayout = () => {
   const map = document.querySelector('#map');
-  const CELL_SIZE = map.clientWidth / 11 - map.clientWidth * 0.0035;
+  const CELL_SIZE = map.clientWidth / 11;
 
   for (let i = 0; i < MAP_SIZE; i++) {
     const matrixRow = [];
@@ -48,13 +45,9 @@ const generateMapLayout = () => {
 
     for (let j = 0; j < MAP_SIZE; j++) {
       const cell = document.createElement('div');
-      const classes = [];
-      addClass(classes, 'mb-1', i !== MAP_SIZE - 1);
-      addClass(classes, 'me-1', j !== MAP_SIZE - 1);
-      cell.classList.add(...classes);
       cell.style.width = CELL_SIZE + 'px';
       cell.style.height = CELL_SIZE + 'px';
-      appendCell('assets/tiles/base_tile.svg', cell);
+      appendCell('assets/tiles/base_tile.svg', cell, i, j);
 
       row.appendChild(cell);
       matrixRow.push(cell);
@@ -75,13 +68,10 @@ const generatePlacingLayout = () => {
 
     for (let j = 0; j < PLACING_SIZE; j++) {
       const cell = document.createElement('div');
-      const classes = ['col-4'];
-      addClass(classes, 'mb-1', i !== PLACING_SIZE - 1);
-      addClass(classes, 'me-1', j !== PLACING_SIZE - 1);
-      cell.classList.add(...classes);
+      cell.classList.add('col-4');
       cell.style.width = PLACING_CELL_SIZE;
       cell.style.height = PLACING_CELL_SIZE;
-      appendCell('assets/tiles/base_tile.svg', cell);
+      appendCell('assets/tiles/base_tile.svg', cell, i, j, true);
 
       row.appendChild(cell);
       matrixRow.push(cell);
@@ -97,3 +87,4 @@ const generateSidebarLayout = () => {
 
 generateMapLayout();
 generateSidebarLayout();
+placeRandomItem();

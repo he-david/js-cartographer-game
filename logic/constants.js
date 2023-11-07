@@ -10,7 +10,7 @@ export const MOUNTAIN_COORDINATES = [
   { row: 9, col: 5 },
 ];
 
-export const PLACING_CELL_SIZE = '50px';
+export const PLACING_CELL_SIZE = '60px';
 
 export const ELEMENTS = [
   {
