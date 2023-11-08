@@ -1,5 +1,6 @@
 import { MAP_SIZE, MOUNTAIN_COORDINATES, PLACING_SIZE, PLACING_CELL_SIZE } from './constants.js';
 import { getSeasonAndTime, hoveringEventHandler, placeRandomItem, placingEventHandler } from './game-logic.js';
+import { quests } from './point-calculation.js';
 
 export const matrix = [];
 export const placingMatrix = [];
@@ -86,9 +87,15 @@ export const refreshTime = () => {
   timeLeft.innerText = getSeasonAndTime().time;
 };
 
+export const refreshPoints = () => {
+  const pointHolders = document.querySelectorAll('.point-holder');
+  pointHolders.forEach((holder) => (holder.innerHTML = `(${quests[holder.id]}&nbsp;point${quests[holder.id] > 1 ? 's' : ''})`));
+};
+
 const generateSidebarLayout = () => {
   generatePlacingLayout();
   refreshTime();
+  refreshPoints();
 };
 
 generateMapLayout();

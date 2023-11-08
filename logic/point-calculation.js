@@ -1,7 +1,10 @@
 import { MAP_SIZE } from './constants.js';
-import { matrix } from './layout-builder.js';
+import { matrix, refreshPoints } from './layout-builder.js';
 
 let points = 0;
+export const quests = {
+  borderlands: 0,
+};
 
 const getTileName = (x, y) => {
   const splittedSrc = matrix[x][y].children[0].src.split('/');
@@ -23,7 +26,6 @@ export const calculatePointsFromBorderlands = () => {
       possibleCols.push({ col: i, tile: colTile });
     }
   }
-  console.log(possibleRows, possibleCols);
   const validRows = possibleRows.filter((possibleRow) =>
     matrix[possibleRow.row].every((_, col) => possibleRow.tile === getTileName(possibleRow.row, col))
   );
@@ -38,7 +40,8 @@ export const calculatePointsFromBorderlands = () => {
     }
     return isFullCol;
   });
-  console.log(validRows, validCols);
-  points += 6 * (validRows.length + validCols.length);
-  console.log(points);
+  const gatheredPoints = 6 * (validRows.length + validCols.length);
+  points += gatheredPoints;
+  quests.borderlands = gatheredPoints;
+  refreshPoints();
 };

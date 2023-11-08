@@ -33,3 +33,16 @@ img {
   padding: 2px;
   opacity: 0.5;
 }
+
+.overlay-box {
+  position: relative;
+}
+
+.overlay-box > img,
+.overlay-text {
+  position: absolute;
+  color: #fff;
+  bottom: 10px;
+  left: 230px;
+  font-size: 12px;
+}
