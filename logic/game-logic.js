@@ -1,5 +1,6 @@
 import { ELEMENTS, PLACING_SIZE } from './constants.js';
 import { fillCell, fillPlacingCell, matrix, refreshTime } from './layout-builder.js';
+import { calculatePointsFromBorderlands } from './point-calculation.js';
 
 let currentItem;
 let previousCoordinates = [];
@@ -82,6 +83,10 @@ export const hoveringEventHandler = (event) => {
   );
 };
 
+const pointCalculation = () => {
+  calculatePointsFromBorderlands();
+};
+
 const changeSeason = (remaining) => {
   seasons[seasons.currentSeason] = 0;
   const seasonNames = Object.getOwnPropertyNames(seasons);
@@ -89,6 +94,7 @@ const changeSeason = (remaining) => {
 
   if (index === seasonNames.length - 1) {
     alert('Game ended');
+    pointCalculation();
   } else {
     seasons.currentSeason = seasonNames[index + 1];
     seasons[seasons.currentSeason] -= remaining;
