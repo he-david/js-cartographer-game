@@ -1,5 +1,5 @@
 import { MAP_SIZE, MOUNTAIN_COORDINATES, PLACING_SIZE, PLACING_CELL_SIZE } from './constants.js';
-import { getSeasonAndTime, hoveringEventHandler, placeRandomItem, placingEventHandler } from './game-logic.js';
+import { getSeasonAndTime, hoveringEventHandler, mirrorItem, placeRandomItem, placingEventHandler, rotateItem } from './game-logic.js';
 import { quests } from './point-calculation.js';
 
 export const matrix = [];
@@ -82,6 +82,14 @@ const generatePlacingLayout = () => {
   }
 };
 
+const createButtonListeners = () => {
+  const rotateButton = document.querySelector('#rotate-button');
+  rotateButton.addEventListener('click', rotateItem);
+
+  const mirrorButton = document.querySelector('#mirror-button');
+  mirrorButton.addEventListener('click', mirrorItem);
+};
+
 export const refreshTime = () => {
   const timeLeft = document.querySelector('#time-left');
   timeLeft.innerText = getSeasonAndTime().time;
@@ -94,6 +102,7 @@ export const refreshPoints = () => {
 
 const generateSidebarLayout = () => {
   generatePlacingLayout();
+  createButtonListeners();
   refreshTime();
   refreshPoints();
 };

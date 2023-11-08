@@ -11,16 +11,13 @@ const seasons = {
   fall: 7,
   winter: 7,
 };
+let isGameInProgress = true;
 
 export const getSeasonAndTime = () => {
   return { season: seasons.currentSeason, time: seasons[seasons.currentSeason] };
 };
 
-export const placeRandomItem = () => {
-  currentItem = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)];
-  const timeSpan = document.querySelector('#time');
-  timeSpan.innerText = currentItem.time;
-
+const refreshItem = () => {
   for (let i = 0; i < PLACING_SIZE; i++) {
     for (let j = 0; j < PLACING_SIZE; j++) {
       fillPlacingCell(`assets/tiles/base_tile.svg`, i, j);
@@ -30,6 +27,32 @@ export const placeRandomItem = () => {
       }
     }
   }
+};
+
+export const placeRandomItem = () => {
+  currentItem = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)];
+  const timeSpan = document.querySelector('#time');
+  timeSpan.innerText = currentItem.time;
+  refreshItem();
+};
+
+export const rotateItem = () => {
+  const shape = currentItem.shape;
+
+  for (let i = 0; i < PLACING_SIZE; i++) {
+    for (let j = i; j < PLACING_SIZE; j++) {
+      const temp = shape[i][j];
+      shape[i][j] = shape[j][i];
+      shape[j][i] = temp;
+    }
+  }
+  shape.forEach((row) => row.reverse());
+  refreshItem();
+};
+
+export const mirrorItem = () => {
+  currentItem.shape.forEach((row) => row.reverse());
+  refreshItem();
 };
 
 const getTopLeftCoordinates = () => {
@@ -93,8 +116,9 @@ const changeSeason = (remaining) => {
   const index = seasonNames.findIndex((name) => name === seasons.currentSeason);
 
   if (index === seasonNames.length - 1) {
-    alert('Game ended');
     pointCalculation();
+    isGameInProgress = false;
+    alert('Game ended');
   } else {
     seasons.currentSeason = seasonNames[index + 1];
     seasons[seasons.currentSeason] -= remaining;
@@ -112,6 +136,9 @@ const itemPlaced = () => {
 };
 
 export const placingEventHandler = (event) => {
+  if (!isGameInProgress) {
+    return;
+  }
   const { isValid, coordinates } = isValidPlace(event);
 
   if (isValid) {
