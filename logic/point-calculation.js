@@ -4,6 +4,7 @@ import { matrix, refreshPoints } from './layout-builder.js';
 let points = 0;
 export const quests = {
   borderlands: 0,
+  'edge-of-the-forest': 0,
 };
 
 const getTileName = (x, y) => {
@@ -12,6 +13,7 @@ const getTileName = (x, y) => {
 };
 
 export const calculatePointsFromBorderlands = () => {
+  // TODO HEDA simplify -> not needed to be identical xD
   const possibleRows = [];
   const possibleCols = [];
 
@@ -43,5 +45,24 @@ export const calculatePointsFromBorderlands = () => {
   const gatheredPoints = 6 * (validRows.length + validCols.length);
   points += gatheredPoints;
   quests.borderlands = gatheredPoints;
+  refreshPoints();
+};
+
+export const calculatePointsFromEdgeOfTheForest = () => {
+  let gatheredPoints = 0;
+
+  for (let i = 1; i < MAP_SIZE - 1; i++) {
+    gatheredPoints += getTileName(0, i) === 'forest' ? 1 : 0;
+    gatheredPoints += getTileName(i, 0) === 'forest' ? 1 : 0;
+    gatheredPoints += getTileName(MAP_SIZE - 1, i) === 'forest' ? 1 : 0;
+    gatheredPoints += getTileName(i, MAP_SIZE - 1) === 'forest' ? 1 : 0;
+  }
+  gatheredPoints += getTileName(0, 0) === 'forest' ? 1 : 0;
+  gatheredPoints += getTileName(MAP_SIZE - 1, MAP_SIZE - 1) === 'forest' ? 1 : 0;
+  gatheredPoints += getTileName(MAP_SIZE - 1, 0) === 'forest' ? 1 : 0;
+  gatheredPoints += getTileName(0, MAP_SIZE - 1) === 'forest' ? 1 : 0;
+
+  points += gatheredPoints;
+  quests['edge-of-the-forest'] = gatheredPoints;
   refreshPoints();
 };
