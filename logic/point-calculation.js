@@ -1,15 +1,20 @@
 import { MAP_SIZE } from './constants.js';
-import { matrix, refreshPoints } from './layout-builder.js';
+import { TileTypes, matrix, refreshPoints } from './layout-builder.js';
 
 let points = 0;
 export const quests = {
   borderlands: 0,
   'edge-of-the-forest': 0,
+  'sleepy-valley': 0,
 };
 
 const getTileName = (x, y) => {
   const splittedSrc = matrix[x][y].children[0].src.split('/');
   return splittedSrc[splittedSrc.length - 1].split('_')[0];
+};
+
+const isSpecificTile = (x, y, tileName) => {
+  return getTileName(x, y) === tileName;
 };
 
 export const calculatePointsFromBorderlands = () => {
@@ -21,21 +26,21 @@ export const calculatePointsFromBorderlands = () => {
     const rowTile = getTileName(i, 0);
     const colTile = getTileName(0, i);
 
-    if (rowTile !== 'base') {
+    if (rowTile !== TileTypes.BASE) {
       possibleRows.push({ row: i, tile: rowTile });
     }
-    if (colTile !== 'base') {
+    if (colTile !== TileTypes.BASE) {
       possibleCols.push({ col: i, tile: colTile });
     }
   }
   const validRows = possibleRows.filter((possibleRow) =>
-    matrix[possibleRow.row].every((_, col) => possibleRow.tile === getTileName(possibleRow.row, col))
+    matrix[possibleRow.row].every((_, col) => isSpecificTile(possibleRow.row, col, possibleRow.tile))
   );
   const validCols = possibleCols.filter((possibleCol) => {
     let isFullCol = true;
 
     for (let row = 0; row < MAP_SIZE; row++) {
-      if (possibleCol.tile !== getTileName(row, possibleCol.col)) {
+      if (!isSpecificTile(row, possibleCol.col, possibleCol.tile)) {
         isFullCol = false;
         break;
       }
@@ -52,17 +57,25 @@ export const calculatePointsFromEdgeOfTheForest = () => {
   let gatheredPoints = 0;
 
   for (let i = 1; i < MAP_SIZE - 1; i++) {
-    gatheredPoints += getTileName(0, i) === 'forest' ? 1 : 0;
-    gatheredPoints += getTileName(i, 0) === 'forest' ? 1 : 0;
-    gatheredPoints += getTileName(MAP_SIZE - 1, i) === 'forest' ? 1 : 0;
-    gatheredPoints += getTileName(i, MAP_SIZE - 1) === 'forest' ? 1 : 0;
+    gatheredPoints += isSpecificTile(0, i, TileTypes.FOREST) ? 1 : 0;
+    gatheredPoints += isSpecificTile(i, 0, TileTypes.FOREST) ? 1 : 0;
+    gatheredPoints += isSpecificTile(MAP_SIZE - 1, i, TileTypes.FOREST) ? 1 : 0;
+    gatheredPoints += isSpecificTile(i, MAP_SIZE - 1, TileTypes.FOREST) ? 1 : 0;
   }
-  gatheredPoints += getTileName(0, 0) === 'forest' ? 1 : 0;
-  gatheredPoints += getTileName(MAP_SIZE - 1, MAP_SIZE - 1) === 'forest' ? 1 : 0;
-  gatheredPoints += getTileName(MAP_SIZE - 1, 0) === 'forest' ? 1 : 0;
-  gatheredPoints += getTileName(0, MAP_SIZE - 1) === 'forest' ? 1 : 0;
+  gatheredPoints += isSpecificTile(0, 0, TileTypes.FOREST) === TileTypes.FOREST ? 1 : 0;
+  gatheredPoints += isSpecificTile(MAP_SIZE - 1, MAP_SIZE - 1, TileTypes.FOREST) ? 1 : 0;
+  gatheredPoints += isSpecificTile(MAP_SIZE - 1, 0, TileTypes.FOREST) ? 1 : 0;
+  gatheredPoints += isSpecificTile(0, MAP_SIZE - 1, TileTypes.FOREST) ? 1 : 0;
 
   points += gatheredPoints;
   quests['edge-of-the-forest'] = gatheredPoints;
+  refreshPoints();
+};
+
+export const calculatePointsFromSleepyValley = () => {
+  const gatheredPoints =
+    4 * matrix.filter((row, i) => 3 === row.reduce((sum, _, j) => (sum += isSpecificTile(i, j, TileTypes.FOREST)), 0)).length;
+  points += gatheredPoints;
+  quests['sleepy-valley'] = gatheredPoints;
   refreshPoints();
 };

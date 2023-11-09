@@ -1,6 +1,10 @@
 import { ELEMENTS, PLACING_SIZE } from './constants.js';
 import { fillCell, fillPlacingCell, matrix, refreshTime } from './layout-builder.js';
-import { calculatePointsFromBorderlands, calculatePointsFromEdgeOfTheForest } from './point-calculation.js';
+import {
+  calculatePointsFromBorderlands,
+  calculatePointsFromEdgeOfTheForest,
+  calculatePointsFromSleepyValley,
+} from './point-calculation.js';
 
 let currentItem;
 let previousCoordinates = [];
@@ -109,6 +113,7 @@ export const hoveringEventHandler = (event) => {
 const pointCalculation = () => {
   calculatePointsFromBorderlands();
   calculatePointsFromEdgeOfTheForest();
+  calculatePointsFromSleepyValley();
 };
 
 const changeSeason = (remaining) => {

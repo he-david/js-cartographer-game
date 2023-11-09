@@ -2,6 +2,14 @@ import { MAP_SIZE, MOUNTAIN_COORDINATES, PLACING_SIZE, PLACING_CELL_SIZE } from 
 import { getSeasonAndTime, hoveringEventHandler, mirrorItem, placeRandomItem, placingEventHandler, rotateItem } from './game-logic.js';
 import { quests } from './point-calculation.js';
 
+export const TileTypes = {
+  FOREST: 'forest',
+  BASE: 'base',
+  MOUNTAIN: 'mountain',
+  PLAINS: 'plains',
+  VILLAGE: 'village',
+  WATER: 'water',
+};
 export const matrix = [];
 export const placingMatrix = [];
 
