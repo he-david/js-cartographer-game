@@ -6,6 +6,7 @@ export const quests = {
   borderlands: 0,
   'edge-of-the-forest': 0,
   'sleepy-valley': 0,
+  'watering-potatoes': 0,
 };
 
 const getTileName = (x, y) => {
@@ -15,6 +16,10 @@ const getTileName = (x, y) => {
 
 const isSpecificTile = (x, y, tileName) => {
   return getTileName(x, y) === tileName;
+};
+
+const areValidIndexes = (x, y) => {
+  return x >= 0 && x < 11 && y >= 0 && y < 11;
 };
 
 export const calculatePointsFromBorderlands = () => {
@@ -77,5 +82,28 @@ export const calculatePointsFromSleepyValley = () => {
     4 * matrix.filter((row, i) => 3 === row.reduce((sum, _, j) => (sum += isSpecificTile(i, j, TileTypes.FOREST)), 0)).length;
   points += gatheredPoints;
   quests['sleepy-valley'] = gatheredPoints;
+  refreshPoints();
+};
+
+const checkNeighbors = (x, y, tileName) => {
+  let has = areValidIndexes(x - 1, y) && isSpecificTile(x - 1, y, tileName);
+  has ||= areValidIndexes(x + 1, y) && isSpecificTile(x + 1, y, tileName);
+  has ||= areValidIndexes(x, y - 1) && isSpecificTile(x, y - 1, tileName);
+  has ||= areValidIndexes(x, y + 1) && isSpecificTile(x, y + 1, tileName);
+  return has;
+};
+
+export const calculatePointsFromWateringPotatoes = () => {
+  let gatheredPoints = 0;
+
+  for (let i = 0; i < MAP_SIZE; i++) {
+    for (let j = 0; j < MAP_SIZE; j++) {
+      if (isSpecificTile(i, j, TileTypes.WATER)) {
+        gatheredPoints += checkNeighbors(i, j, TileTypes.PLAINS) ? 2 : 0;
+      }
+    }
+  }
+  points += gatheredPoints;
+  quests['watering-potatoes'] = gatheredPoints;
   refreshPoints();
 };

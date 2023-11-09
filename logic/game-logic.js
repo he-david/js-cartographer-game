@@ -4,6 +4,7 @@ import {
   calculatePointsFromBorderlands,
   calculatePointsFromEdgeOfTheForest,
   calculatePointsFromSleepyValley,
+  calculatePointsFromWateringPotatoes,
 } from './point-calculation.js';
 
 let currentItem;
@@ -114,6 +115,7 @@ const pointCalculation = () => {
   calculatePointsFromBorderlands();
   calculatePointsFromEdgeOfTheForest();
   calculatePointsFromSleepyValley();
+  calculatePointsFromWateringPotatoes();
 };
 
 const changeSeason = (remaining) => {
