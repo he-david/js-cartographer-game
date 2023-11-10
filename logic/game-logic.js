@@ -1,5 +1,5 @@
 import { ELEMENTS, PLACING_SIZE } from './constants.js';
-import { fillCell, fillPlacingCell, highlightQuests, matrix, refreshSeason, refreshTime } from './layout-builder.js';
+import { fillCell, fillPlacingCell, highlightQuests, matrix, refreshSeason, refreshSeasonPoints, refreshTime } from './layout-builder.js';
 import {
   actualQuests,
   calculatePointsFromBorderlands,
@@ -25,7 +25,7 @@ export const getSeasonAndTime = () => {
 
 export const getQuestsInSeason = () => {
   const season = getSeasonAndTime().season;
-  return Object.keys(actualQuests).filter((quest) => actualQuests[quest].available.includes(season));
+  return actualQuests.filter((quest) => quest.available.includes(season));
 };
 
 const refreshItem = () => {
@@ -38,6 +38,7 @@ const refreshItem = () => {
       }
     }
   }
+  pointCalculation();
 };
 
 export const placeRandomItem = () => {
@@ -126,6 +127,7 @@ const pointCalculation = () => {
 
 const changeSeason = (remaining) => {
   seasons[seasons.currentSeason] = 0;
+  const previousSeason = seasons.currentSeason;
   const seasonNames = Object.getOwnPropertyNames(seasons);
   const index = seasonNames.findIndex((name) => name === seasons.currentSeason);
 
@@ -139,6 +141,7 @@ const changeSeason = (remaining) => {
   }
   highlightQuests();
   refreshSeason();
+  refreshSeasonPoints(previousSeason);
 };
 
 const itemPlaced = () => {

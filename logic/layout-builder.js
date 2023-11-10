@@ -8,7 +8,7 @@ import {
   placingEventHandler,
   rotateItem,
 } from './game-logic.js';
-import { actualQuests } from './point-calculation.js';
+import { actualQuests, pointsInPreviousSeason } from './point-calculation.js';
 
 export const TileTypes = {
   FOREST: 'forest',
@@ -111,10 +111,26 @@ export const refreshTime = () => {
   timeLeft.innerText = getSeasonAndTime().time;
 };
 
+const getTotalPoints = () => {
+  return actualQuests.reduce((sum, quest) => (sum += quest.points), 0);
+};
+
+export const refreshSeasonPoints = (previousSeason) => {
+  const seasonPointsP = document.querySelector(`.${previousSeason}-points`);
+  const totalPoints = getTotalPoints();
+  const seasonPoints = totalPoints - pointsInPreviousSeason[0];
+  pointsInPreviousSeason[0] = totalPoints;
+  seasonPointsP.innerHTML = `${seasonPoints}&nbsp;point${seasonPoints > 1 ? 's' : ''}`;
+};
+
 export const refreshPoints = () => {
+  const totalPointsSpan = document.querySelector('#total-points');
+  const totalPoints = getTotalPoints();
+  totalPointsSpan.innerHTML = `${totalPoints}&nbsp;point${totalPoints > 1 ? 's' : ''}`;
+
   const pointHolders = document.querySelectorAll('.point-holder');
-  Object.keys(actualQuests).forEach((quest, i) => {
-    pointHolders[i].innerHTML = `(${actualQuests[quest].points}&nbsp;point${actualQuests[quest].points > 1 ? 's' : ''})`;
+  actualQuests.forEach((quest, i) => {
+    pointHolders[i].innerHTML = `(${quest.points}&nbsp;point${quest.points > 1 ? 's' : ''})`;
   });
 };
 
@@ -125,7 +141,7 @@ export const highlightQuests = () => {
   questImages.forEach((img) => {
     img.classList.add('not-highlighted');
 
-    if (seasonalQuests.some((quest) => img.src.includes(quest))) {
+    if (seasonalQuests.some((quest) => img.src.includes(quest.name))) {
       img.classList.remove('not-highlighted');
     }
   });
@@ -133,8 +149,8 @@ export const highlightQuests = () => {
 
 export const setupQuests = () => {
   const questImages = document.querySelectorAll('.quest-img');
-  Object.keys(actualQuests).forEach((quest, i) => {
-    questImages[i].src = `assets/missions_eng/${quest}.png`;
+  actualQuests.forEach((quest, i) => {
+    questImages[i].src = `assets/missions_eng/${quest.name}.png`;
   });
   highlightQuests();
 };
