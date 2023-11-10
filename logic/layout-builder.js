@@ -1,6 +1,14 @@
 import { MAP_SIZE, MOUNTAIN_COORDINATES, PLACING_SIZE, PLACING_CELL_SIZE } from './constants.js';
-import { getSeasonAndTime, hoveringEventHandler, mirrorItem, placeRandomItem, placingEventHandler, rotateItem } from './game-logic.js';
-import { quests } from './point-calculation.js';
+import {
+  getQuestsInSeason,
+  getSeasonAndTime,
+  hoveringEventHandler,
+  mirrorItem,
+  placeRandomItem,
+  placingEventHandler,
+  rotateItem,
+} from './game-logic.js';
+import { actualQuests } from './point-calculation.js';
 
 export const TileTypes = {
   FOREST: 'forest',
@@ -105,7 +113,39 @@ export const refreshTime = () => {
 
 export const refreshPoints = () => {
   const pointHolders = document.querySelectorAll('.point-holder');
-  pointHolders.forEach((holder) => (holder.innerHTML = `(${quests[holder.id]}&nbsp;point${quests[holder.id] > 1 ? 's' : ''})`));
+  Object.keys(actualQuests).forEach((quest, i) => {
+    pointHolders[i].innerHTML = `(${actualQuests[quest].points}&nbsp;point${actualQuests[quest].points > 1 ? 's' : ''})`;
+  });
+};
+
+export const highlightQuests = () => {
+  const questImages = document.querySelectorAll('.quest-img');
+  const seasonalQuests = getQuestsInSeason();
+
+  questImages.forEach((img) => {
+    img.classList.add('not-highlighted');
+
+    if (seasonalQuests.some((quest) => img.src.includes(quest))) {
+      img.classList.remove('not-highlighted');
+    }
+  });
+};
+
+export const setupQuests = () => {
+  const questImages = document.querySelectorAll('.quest-img');
+  Object.keys(actualQuests).forEach((quest, i) => {
+    questImages[i].src = `assets/missions_eng/${quest}.png`;
+  });
+  highlightQuests();
+};
+
+export const refreshSeason = () => {
+  const currentSeason = document.querySelector('#current-season');
+  currentSeason.innerText = getSeasonAndTime().season;
+};
+
+const setupSeasons = () => {
+  refreshSeason();
 };
 
 const generateSidebarLayout = () => {
@@ -113,6 +153,8 @@ const generateSidebarLayout = () => {
   createButtonListeners();
   refreshTime();
   refreshPoints();
+  setupQuests();
+  setupSeasons();
 };
 
 generateMapLayout();

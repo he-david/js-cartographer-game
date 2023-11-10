@@ -1,6 +1,7 @@
 import { ELEMENTS, PLACING_SIZE } from './constants.js';
-import { fillCell, fillPlacingCell, matrix, refreshTime } from './layout-builder.js';
+import { fillCell, fillPlacingCell, highlightQuests, matrix, refreshSeason, refreshTime } from './layout-builder.js';
 import {
+  actualQuests,
   calculatePointsFromBorderlands,
   calculatePointsFromEdgeOfTheForest,
   calculatePointsFromSleepyValley,
@@ -20,6 +21,11 @@ let isGameInProgress = true;
 
 export const getSeasonAndTime = () => {
   return { season: seasons.currentSeason, time: seasons[seasons.currentSeason] };
+};
+
+export const getQuestsInSeason = () => {
+  const season = getSeasonAndTime().season;
+  return Object.keys(actualQuests).filter((quest) => actualQuests[quest].available.includes(season));
 };
 
 const refreshItem = () => {
@@ -131,6 +137,8 @@ const changeSeason = (remaining) => {
     seasons.currentSeason = seasonNames[index + 1];
     seasons[seasons.currentSeason] -= remaining;
   }
+  highlightQuests();
+  refreshSeason();
 };
 
 const itemPlaced = () => {

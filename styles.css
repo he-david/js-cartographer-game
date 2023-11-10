@@ -46,3 +46,12 @@ img {
   left: 230px;
   font-size: 12px;
 }
+
+#quests img {
+  border: 5px solid transparent;
+  background-color: transparent;
+}
+
+#quests .not-highlighted {
+  opacity: 0.5;
+}

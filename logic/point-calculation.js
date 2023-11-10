@@ -1,12 +1,31 @@
 import { MAP_SIZE } from './constants.js';
+import { getSeasonAndTime } from './game-logic.js';
 import { TileTypes, matrix, refreshPoints } from './layout-builder.js';
 
 let points = 0;
 export const quests = {
-  borderlands: 0,
   'edge-of-the-forest': 0,
   'sleepy-valley': 0,
   'watering-potatoes': 0,
+  borderlands: 0,
+};
+export const actualQuests = {
+  'edge-of-the-forest': {
+    points: 0,
+    available: ['spring', 'winter'],
+  },
+  'sleepy-valley': {
+    points: 0,
+    available: ['spring', 'summer'],
+  },
+  'watering-potatoes': {
+    points: 0,
+    available: ['summer', 'fall'],
+  },
+  borderlands: {
+    points: 0,
+    available: ['fall', 'winter'],
+  },
 };
 
 const getTileName = (x, y) => {
@@ -54,7 +73,7 @@ export const calculatePointsFromBorderlands = () => {
   });
   const gatheredPoints = 6 * (validRows.length + validCols.length);
   points += gatheredPoints;
-  quests.borderlands = gatheredPoints;
+  actualQuests.borderlands.points = gatheredPoints;
   refreshPoints();
 };
 
@@ -73,7 +92,7 @@ export const calculatePointsFromEdgeOfTheForest = () => {
   gatheredPoints += isSpecificTile(0, MAP_SIZE - 1, TileTypes.FOREST) ? 1 : 0;
 
   points += gatheredPoints;
-  quests['edge-of-the-forest'] = gatheredPoints;
+  actualQuests['edge-of-the-forest'].points = gatheredPoints;
   refreshPoints();
 };
 
@@ -81,7 +100,7 @@ export const calculatePointsFromSleepyValley = () => {
   const gatheredPoints =
     4 * matrix.filter((row, i) => 3 === row.reduce((sum, _, j) => (sum += isSpecificTile(i, j, TileTypes.FOREST)), 0)).length;
   points += gatheredPoints;
-  quests['sleepy-valley'] = gatheredPoints;
+  actualQuests['sleepy-valley'].points = gatheredPoints;
   refreshPoints();
 };
 
@@ -104,6 +123,6 @@ export const calculatePointsFromWateringPotatoes = () => {
     }
   }
   points += gatheredPoints;
-  quests['watering-potatoes'] = gatheredPoints;
+  actualQuests['watering-potatoes'].points = gatheredPoints;
   refreshPoints();
 };
