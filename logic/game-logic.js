@@ -1,11 +1,28 @@
 import { ELEMENTS, PLACING_SIZE } from './constants.js';
-import { fillCell, fillPlacingCell, highlightQuests, matrix, refreshSeason, refreshSeasonPoints, refreshTime } from './layout-builder.js';
+import {
+  fillCell,
+  fillPlacingCell,
+  highlightQuests,
+  matrix,
+  refreshPoints,
+  refreshSeason,
+  refreshSeasonPoints,
+  refreshTime,
+} from './layout-builder.js';
 import {
   actualQuests,
   calculatePointsFromBorderlands,
   calculatePointsFromEdgeOfTheForest,
+  calculatePointsFromEmptySite,
+  calculatePointsFromMagiciansValley,
+  calculatePointsFromOddNumberedSilos,
+  calculatePointsFromRichCountryside,
+  calculatePointsFromRowOfHouses,
   calculatePointsFromSleepyValley,
+  calculatePointsFromTreeLines,
+  calculatePointsFromWateringCanal,
   calculatePointsFromWateringPotatoes,
+  calculatePointsFromWealthyTown,
 } from './point-calculation.js';
 
 let currentItem;
@@ -17,7 +34,7 @@ const seasons = {
   fall: 7,
   winter: 7,
 };
-let isGameInProgress = true;
+export const isGameInProgress = [true];
 
 export const getSeasonAndTime = () => {
   return { season: seasons.currentSeason, time: seasons[seasons.currentSeason] };
@@ -28,7 +45,7 @@ export const getQuestsInSeason = () => {
   return actualQuests.filter((quest) => quest.available.includes(season));
 };
 
-const refreshItem = () => {
+const refreshItem = (changeLook = false) => {
   for (let i = 0; i < PLACING_SIZE; i++) {
     for (let j = 0; j < PLACING_SIZE; j++) {
       fillPlacingCell(`assets/tiles/base_tile.svg`, i, j);
@@ -38,7 +55,9 @@ const refreshItem = () => {
       }
     }
   }
-  pointCalculation();
+  if (!changeLook) {
+    pointCalculation();
+  }
 };
 
 export const placeRandomItem = () => {
@@ -59,12 +78,12 @@ export const rotateItem = () => {
     }
   }
   shape.forEach((row) => row.reverse());
-  refreshItem();
+  refreshItem(true);
 };
 
 export const mirrorItem = () => {
   currentItem.shape.forEach((row) => row.reverse());
-  refreshItem();
+  refreshItem(true);
 };
 
 const getTopLeftCoordinates = () => {
@@ -123,6 +142,22 @@ const pointCalculation = () => {
   calculatePointsFromEdgeOfTheForest();
   calculatePointsFromSleepyValley();
   calculatePointsFromWateringPotatoes();
+  calculatePointsFromTreeLines();
+  calculatePointsFromWealthyTown();
+  calculatePointsFromWateringCanal();
+  calculatePointsFromMagiciansValley();
+  calculatePointsFromEmptySite();
+  calculatePointsFromRowOfHouses();
+  calculatePointsFromOddNumberedSilos();
+  calculatePointsFromRichCountryside();
+};
+
+const gameEnded = () => {
+  pointCalculation();
+  refreshPoints(true);
+  isGameInProgress[0] = false;
+  const gameEndAlert = document.querySelector('#game-end-alert');
+  gameEndAlert.classList.remove('visually-hidden');
 };
 
 const changeSeason = (remaining) => {
@@ -131,17 +166,17 @@ const changeSeason = (remaining) => {
   const seasonNames = Object.getOwnPropertyNames(seasons);
   const index = seasonNames.findIndex((name) => name === seasons.currentSeason);
 
-  if (index === seasonNames.length - 1) {
-    pointCalculation();
-    isGameInProgress = false;
-    alert('Game ended');
-  } else {
+  if (index !== seasonNames.length - 1) {
     seasons.currentSeason = seasonNames[index + 1];
     seasons[seasons.currentSeason] -= remaining;
   }
   highlightQuests();
   refreshSeason();
   refreshSeasonPoints(previousSeason);
+
+  if (index === seasonNames.length - 1) {
+    gameEnded();
+  }
 };
 
 const itemPlaced = () => {
@@ -155,7 +190,7 @@ const itemPlaced = () => {
 };
 
 export const placingEventHandler = (event) => {
-  if (!isGameInProgress) {
+  if (!isGameInProgress[0]) {
     return;
   }
   const { isValid, coordinates } = isValidPlace(event);

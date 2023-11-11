@@ -3,12 +3,13 @@ import {
   getQuestsInSeason,
   getSeasonAndTime,
   hoveringEventHandler,
+  isGameInProgress,
   mirrorItem,
   placeRandomItem,
   placingEventHandler,
   rotateItem,
 } from './game-logic.js';
-import { actualQuests, pointsInPreviousSeason } from './point-calculation.js';
+import { QuestTypes, actualQuests, calculatePointsFromFencedMountains, pointsInPreviousSeason } from './point-calculation.js';
 
 export const TileTypes = {
   FOREST: 'forest',
@@ -123,9 +124,12 @@ export const refreshSeasonPoints = (previousSeason) => {
   seasonPointsP.innerHTML = `${seasonPoints}&nbsp;point${seasonPoints > 1 ? 's' : ''}`;
 };
 
-export const refreshPoints = () => {
+export const refreshPoints = (end = false) => {
+  if (!isGameInProgress[0]) {
+    return;
+  }
   const totalPointsSpan = document.querySelector('#total-points');
-  const totalPoints = getTotalPoints();
+  const totalPoints = end ? getTotalPoints() + calculatePointsFromFencedMountains() : getTotalPoints();
   totalPointsSpan.innerHTML = `${totalPoints}&nbsp;point${totalPoints > 1 ? 's' : ''}`;
 
   const pointHolders = document.querySelectorAll('.point-holder');
@@ -147,7 +151,23 @@ export const highlightQuests = () => {
   });
 };
 
+const randomizeActualQuests = () => {
+  let randomIndex;
+  const questArray = Object.values(QuestTypes);
+  let currentIndex = questArray.length;
+
+  while (currentIndex > 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [questArray[currentIndex], questArray[randomIndex]] = [questArray[randomIndex], questArray[currentIndex]];
+  }
+  for (let i = 0; i < 4; i++) {
+    actualQuests[i].name = questArray[i];
+  }
+};
+
 export const setupQuests = () => {
+  randomizeActualQuests();
   const questImages = document.querySelectorAll('.quest-img');
   actualQuests.forEach((quest, i) => {
     questImages[i].src = `assets/missions_eng/${quest.name}.png`;
